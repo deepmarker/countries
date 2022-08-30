@@ -102,6 +102,27 @@ import (
 // CountryCode - country code (254 countries). Three codes present, for example Russia == RU == RUS == 643.
 type CountryCode int64 // int64 for database/sql/driver.Valuer compatibility
 
+// MarshalJSON implements the json.Marshaler interface for Origin
+func (i CountryCode) MarshalJSON() ([]byte, error) {
+	return json.Marshal(i.Alpha3())
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Origin
+func (i *CountryCode) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return fmt.Errorf("CountryCode should be a string, got %s", data)
+	}
+
+	cc := ByName(s)
+	if cc == Unknown {
+		return fmt.Errorf("%s does not belong to CountryCode values", s)
+	} else {
+		*i = cc
+	}
+	return nil
+}
+
 // Country - all info about country
 type Country struct {
 	Name         string            `json:"name"`
