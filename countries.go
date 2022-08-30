@@ -104,7 +104,7 @@ type CountryCode int64 // int64 for database/sql/driver.Valuer compatibility
 
 // MarshalJSON implements the json.Marshaler interface for Origin
 func (i CountryCode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(i.Alpha3())
+	return json.Marshal(i.String())
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Origin
